@@ -1,0 +1,10 @@
+organizacion,usuario,rol 
+org1,jperez,admin 
+org1,jperez,superadmin
+org1,asosa,writer
+org2,jperez,admin 
+org2,rrodriguez,writer
+org2,rrodriguez,editor
+org2,rrodriguez,admin
+org2,klopez,admin
+org3,klopez,admin
