@@ -12,7 +12,7 @@ import (
 )
 
 // Trade clients transations
-type trade struct {
+type Trade struct {
 	ClientID int     `json:"clientId"`
 	Phone    int     `json:"phone"`
 	Nombre   string  `json:"nombre"`
@@ -23,7 +23,7 @@ type trade struct {
 }
 
 // Statistics transations statistics
-type statistics struct {
+type Statistics struct {
 	Total         float64            `json:"total"`
 	ComprasPorTDC map[string]float64 `json:"comprasPorTDC"`
 	NoCompraron   int                `json:"noCompraron"`
@@ -36,9 +36,9 @@ const shortForm = "2006-01-02"
 var wg sync.WaitGroup
 
 // getApiCruit Consume API Rest
-func getAPICruit(date string, c chan<- []trade) {
+func getAPICruit(date string, c chan<- []Trade) {
 	defer wg.Done()
-	var trades []trade
+	var trades []Trade
 
 	url := fmt.Sprintf(baseURL, date)
 	response, err := http.Get(url)
@@ -82,7 +82,7 @@ func getArrayDates(startDate time.Time, days int, dates *[]string) {
 	}
 }
 
-func getStats(trades []trade, stats *statistics) {
+func getStats(trades []Trade, stats *Statistics) {
 	var valTemp float64
 	m := make(map[string]float64)
 	for _, t := range trades {
@@ -119,10 +119,10 @@ func summaryFunc(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err)
 	}
 
-	var trades []trade
+	var trades []Trade
 	dates := []string{}
 	getArrayDates(valueDate, paramDays, &dates)
-	c := make(chan []trade, len(dates))
+	c := make(chan []Trade, len(dates))
 
 	for _, date := range dates {
 		wg.Add(1)
@@ -130,7 +130,7 @@ func summaryFunc(ctx echo.Context) error {
 	}
 	wg.Wait()
 	close(c)
-	var stats statistics
+	var stats Statistics
 
 	for item := range c {
 		trades = append(trades, item...)
